@@ -1,24 +1,24 @@
 <?php
 
-namespace Classes\Nginx;
+namespace Classes\SubApp\Nginx;
 
 use Classes\Program\Interfaces\ProgramCommand;
 
 #------------------------------------------------------------------------------
-# @class ProgramCommandNginxCheck
+# @class ProgramCommandNginxReload
 # @extends none
 # @implements ProgramCommand
-# Class hundle nginx command: nginx -t
+# Class hundle nginx command: service nginx reload
 #------------------------------------------------------------------------------
-class ProgramCommandNginxCheck implements ProgramCommand {
+class ProgramCommandNginxReload implements ProgramCommand {
     #--------------------------------------------------------------------------
     # @method getCommand
     # @access public
     # @params none
-    # @return void
-    # Metod hundle ...
+    # @return string
+    # Metod return reload nginx command
     #--------------------------------------------------------------------------
     public function getCommand(){
-        return 'sudo nginx -t';
+        return 'sudo service nginx reload';
     }
 }

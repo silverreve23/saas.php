@@ -1,26 +1,29 @@
 <?php
 
-namespace Classes\Nginx;
+namespace Classes\SubApp\Mysql;
 
 use Classes\Program\Interfaces\ProgramConfig;
 
 #------------------------------------------------------------------------------
-# @class ProgramConfigNginxServer
+# @class ProgramConfigCreateDBMysqlServer
 # @extends none
 # @implements ProgramConfig
-# Class config for nginx sub app
+# Class config of create db mysql for sub app
 #------------------------------------------------------------------------------
-class ProgramConfigNginxServer implements ProgramConfig {
-    public $nginxConfigSiteAvaliadlePath = '/etc/nginx/site-avaliable';
-    public $nginxConfigSiteEnabledlePath = '/etc/nginx/site-enable';
+class ProgramConfigCreateDBMysqlServer implements ProgramConfig {
     #--------------------------------------------------------------------------
     # @method getConfig
     # @access public
     # @params void
     # @return object
-    # Method get nginx config program
+    # Method get mysql config program
     #--------------------------------------------------------------------------
     public function getConfig(){
-        return 'config';
+        return "
+            CREATE DATABASE SAAS_DB_TEST;
+            CREATE USER 'saas_user_test'@'localhost' IDENTIFIED BY 'password';
+            GRANT ALL PRIVILEGES ON SAAS_DB_TEST.* TO 'saas_user_test'@'localhost';
+            FLUSH PRIVILEGES;
+        ";
     }
 }

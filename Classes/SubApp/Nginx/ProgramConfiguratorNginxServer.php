@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Nginx;
+namespace Classes\SubApp\Nginx;
 
 use Classes\Program\Interfaces\ProgramConfig;
 use Classes\Program\Interfaces\ProgramConfigurator;
@@ -30,7 +30,14 @@ class ProgramConfiguratorNginxServer implements ProgramConfigurator {
     # Method set nginx program config
     #--------------------------------------------------------------------------
     public function setConfig(){
-        return $this->nginxConfig->getConfig();
+        $siteAppConfigName = 'saas_test';
+        $siteAppConfig = $this->nginxConfig->getConfig();
+        $siteConfigFile =
+            $this->nginxConfig->siteAvaliadlePath
+            .$siteAppConfigName;
+        $isCreated = file_put_contents($siteConfigFile, $siteAppConfig);
+        var_dump($isCreated);
+        return $isCreated;
     }
     #--------------------------------------------------------------------------
     # @method flushConfig

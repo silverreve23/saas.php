@@ -1,24 +1,24 @@
 <?php
 
-namespace Classes\Nginx;
+namespace Classes\SubApp\Mysql;
 
 use Classes\Program\Interfaces\ProgramCommand;
 
 #------------------------------------------------------------------------------
-# @class ProgramCommandNginxReload
+# @class ProgramCommandMysqlCheck
 # @extends none
 # @implements ProgramCommand
-# Class hundle nginx command: service nginx reload
+# Class hundle mysql command: service mysql status
 #------------------------------------------------------------------------------
-class ProgramCommandNginxReload implements ProgramCommand {
+class ProgramCommandMysqlCheck implements ProgramCommand {
     #--------------------------------------------------------------------------
     # @method getCommand
     # @access public
     # @params none
-    # @return void
-    # Metod hundle ...
+    # @return string
+    # Metod return mysql status command
     #--------------------------------------------------------------------------
     public function getCommand(){
-        return 'sudo service nginx reload';
+        return 'sudo service mysql status';
     }
 }

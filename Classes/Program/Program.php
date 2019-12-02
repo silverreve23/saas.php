@@ -15,6 +15,7 @@ use Classes\Program\Interfaces\ProgramConfigurator;
 # Class extends program for nginx sub app
 #------------------------------------------------------------------------------
 class Program implements ProgramMain {
+    protected const STATUS_ERROR = -1;
     #--------------------------------------------------------------------------
     # @method ProgramNginx
     # @access public
@@ -38,5 +39,18 @@ class Program implements ProgramMain {
     #--------------------------------------------------------------------------
     public function setConfig(ProgramConfigurator $configurator){
         return $configurator->setConfig();
+    }
+    #--------------------------------------------------------------------------
+    # @method runProgramCommand
+    # @access protected
+    # @params ProgramCommand
+    # @return boolean
+    # Metod run mprogram command and return status
+    #--------------------------------------------------------------------------
+    protected function runProgramCommand(ProgramCommand $command){
+        $commandCheckResult = $this->runCommand(
+            $command
+        );
+        return ($commandCheckResult->status == 0);
     }
 }
