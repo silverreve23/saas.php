@@ -11,6 +11,9 @@ use Classes\Program\Interfaces\ProgramConfig;
 # Class config of create db mysql for sub app
 #------------------------------------------------------------------------------
 class ProgramConfigCreateDBMysqlServer implements ProgramConfig {
+    public function __construct(Object $data){
+        $this->configData = $data;
+    }
     #--------------------------------------------------------------------------
     # @method getConfig
     # @access public
@@ -19,8 +22,9 @@ class ProgramConfigCreateDBMysqlServer implements ProgramConfig {
     # Method get mysql config program
     #--------------------------------------------------------------------------
     public function getConfig(){
+        $databaseName = $this->configData->name;
         return "
-            CREATE DATABASE SAAS_DB_TEST;
+            CREATE DATABASE $databaseName;
             CREATE USER 'saas_user_test'@'localhost' IDENTIFIED BY 'password';
             GRANT ALL PRIVILEGES ON SAAS_DB_TEST.* TO 'saas_user_test'@'localhost';
             FLUSH PRIVILEGES;

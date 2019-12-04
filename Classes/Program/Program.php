@@ -6,7 +6,7 @@ use Classes\Program\Interfaces\ProgramCommand;
 use Classes\Program\Interfaces\ProgramMain;
 use Classes\Program\Interfaces\ProgramConfig;
 use Classes\Program\Interfaces\ProgramConfigurator;
-
+use Exception;
 
 #------------------------------------------------------------------------------
 # @class Program
@@ -48,9 +48,14 @@ class Program implements ProgramMain {
     # Metod run mprogram command and return status
     #--------------------------------------------------------------------------
     protected function runProgramCommand(ProgramCommand $command){
+        $commandName = $command->getCommand();
         $commandCheckResult = $this->runCommand(
             $command
         );
-        return ($commandCheckResult->status == 0);
+        if($commandCheckResult->status == 0) return true;
+        throw new Exception(
+            "Runed bash ($commandName) exit with error\n",
+            $commandCheckResult->status
+        );
     }
 }

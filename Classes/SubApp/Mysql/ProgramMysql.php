@@ -18,6 +18,9 @@ use Classes\SubApp\Mysql\ProgramConfiguratorMysqlServer;
 # Class hundle mysql configuration for sub app
 #------------------------------------------------------------------------------
 class ProgramMysql extends Program implements ProgramSubApp {
+    public function __construct(Object $data){
+        $this->configData = $data;
+    }
     #--------------------------------------------------------------------------
     # @method createConfig
     # @access public
@@ -26,17 +29,12 @@ class ProgramMysql extends Program implements ProgramSubApp {
     # Metod create config for mysql sub app
     #--------------------------------------------------------------------------
     public function createConfig(){
-        $isStatusOk = $this->runProgramCommand(
-            new ProgramCommandMysqlCheck
+        $this->checkMysql();
+        return $this->setConfig(
+            $this->getMysqlConfigurator(
+                $configType = 'create'
+            )
         );
-        if($isStatusOk){
-            $isConfigured = $this->setConfig(
-                new ProgramConfiguratorMysqlServer(
-                    new ProgramConfigCreateDBMysqlServer
-                )
-            );
-            return $isConfigured;
-        }
     }
     #--------------------------------------------------------------------------
     # @method flushConfig
@@ -46,9 +44,37 @@ class ProgramMysql extends Program implements ProgramSubApp {
     # Metod remove config for mysql sub app
     #--------------------------------------------------------------------------
     public function flushConfig(){
-        $mysqlConfigurator = new ProgramConfiguratorMysqlServer(
-            new ProgramConfigRemoveDBMysqlServer
+        return $this->getMysqlConfigurator(
+            $configType = 'remove'
+        )->flushConfig();
+    }
+    #--------------------------------------------------------------------------
+    # @method checkMysql
+    # @access private
+    # @params void
+    # @return boolean
+    # Metod run check status mysql command and return status
+    #--------------------------------------------------------------------------
+    private function checkMysql(){
+        return $this->runProgramCommand(
+            new ProgramCommandMysqlCheck
         );
-        return $mysqlConfigurator->flushConfig();
+    }
+    #--------------------------------------------------------------------------
+    # @method getMysqlConfigurator
+    # @access private
+    # @params void
+    # @return Object
+    # Metod return mysql configurator Object
+    #--------------------------------------------------------------------------
+    private function getMysqlConfigurator($configType = 'create'){
+        $configClass = ($configType == 'create')
+            ? ProgramConfigCreateDBMysqlServer::class
+            : ProgramConfigRemoveDBMysqlServer::class;
+        return new ProgramConfiguratorMysqlServer(
+            new $configClass(
+                $this->configData
+            )
+        );
     }
 }

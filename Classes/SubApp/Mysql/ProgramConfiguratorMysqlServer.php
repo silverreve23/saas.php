@@ -13,13 +13,6 @@ use mysqli as Mysqli;
 # Class configurator for mysql sub app
 #------------------------------------------------------------------------------
 class ProgramConfiguratorMysqlServer implements ProgramConfigurator {
-    #--------------------------------------------------------------------------
-    # @method __construct
-    # @access public
-    # @params ProgramConfigurator
-    # @return void
-    # Metod get configurator for mysql program sub app
-    #--------------------------------------------------------------------------
     function __construct(ProgramConfig $mysqlConfig){
         $this->mysqlConfig = $mysqlConfig;
     }
@@ -31,9 +24,9 @@ class ProgramConfiguratorMysqlServer implements ProgramConfigurator {
     # Method set mysql program config
     #--------------------------------------------------------------------------
     public function setConfig(){
-        $createMysqlConfig = $this->mysqlConfig->getConfig();
-        $resultStatement = $this->runDBStatement($createMysqlConfig);
-        return $resultStatement;
+        return $this->runDBStatement(
+            $this->mysqlConfig->getConfig()
+        );
     }
     #--------------------------------------------------------------------------
     # @method flushConfig
@@ -43,9 +36,9 @@ class ProgramConfiguratorMysqlServer implements ProgramConfigurator {
     # Method remove mysql program config
     #--------------------------------------------------------------------------
     public function flushConfig(){
-        $removeMysqlConfig = $this->mysqlConfig->getConfig();
-        $resultStatement = $this->runDBStatement($removeMysqlConfig);
-        return $resultStatement;
+        return $this->runDBStatement(
+            $this->mysqlConfig->getConfig()
+        );
     }
     #--------------------------------------------------------------------------
     # @method runDBStatement

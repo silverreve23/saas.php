@@ -17,6 +17,9 @@ use Classes\SubApp\Nginx\ProgramConfiguratorNginxServer;
 # Class hundle nginx configuration for sub app
 #------------------------------------------------------------------------------
 class ProgramNginx extends Program implements ProgramSubApp {
+    public function __construct(Object $data){
+        $this->configData = $data;
+    }
     #--------------------------------------------------------------------------
     # @method createConfig
     # @access public
@@ -25,26 +28,11 @@ class ProgramNginx extends Program implements ProgramSubApp {
     # Metod create config for nginx sub app
     #--------------------------------------------------------------------------
     public function createConfig(){
-        $isStatusReloadOk = self::STATUS_ERROR;
-        $isStatusOk = $this->runProgramCommand(
-            new ProgramCommandNginxCheck
+        $this->setConfig(
+            $this->getNginxConfigurator()
         );
-        if($isStatusOk){
-            $isConfigured = $this->setConfig(
-                new ProgramConfiguratorNginxServer(
-                    new ProgramConfigNginxServer
-                )
-            );
-            $isStatusOk = $this->runProgramCommand(
-                new ProgramCommandNginxCheck
-            );
-            if($isConfigured && $isStatusOk){
-                $isStatusReloadOk = $this->runProgramCommand(
-                    new ProgramCommandNginxReload
-                );
-            }
-            return $isStatusReloadOk;
-        }
+        $this->checkNginx();
+        $this->reloadNginx();
     }
     #--------------------------------------------------------------------------
     # @method flushConfig
@@ -54,12 +42,45 @@ class ProgramNginx extends Program implements ProgramSubApp {
     # Metod remove config for nginx sub app
     #--------------------------------------------------------------------------
     public function flushConfig(){
-        $nginxConfigurator = new ProgramConfiguratorNginxServer(
-            new ProgramConfigNginxServer
+        $this->getNginxConfigurator()->flushConfig();
+        return $this->reloadNginx();
+    }
+    #--------------------------------------------------------------------------
+    # @method reloadNginx
+    # @access private
+    # @params void
+    # @return boolean
+    # Metod run reload nginx command and return status
+    #--------------------------------------------------------------------------
+    private function reloadNginx(){
+        return $this->runProgramCommand(
+            new ProgramCommandNginxReload
         );
-        if($nginxConfigurator->flushConfig())
-            return $this->runProgramCommand(
-                new ProgramCommandNginxReload
-            );
+    }
+    #--------------------------------------------------------------------------
+    # @method checkNginx
+    # @access private
+    # @params void
+    # @return boolean
+    # Metod run check status nginx command and return status
+    #--------------------------------------------------------------------------
+    private function checkNginx(){
+        return $this->runProgramCommand(
+            new ProgramCommandNginxCheck
+        );
+    }
+    #--------------------------------------------------------------------------
+    # @method getNginxConfigurator
+    # @access private
+    # @params void
+    # @return Object
+    # Metod return nginx configurator Object
+    #--------------------------------------------------------------------------
+    private function getNginxConfigurator(){
+        return new ProgramConfiguratorNginxServer(
+            new ProgramConfigNginxServer(
+                $this->configData
+            )
+        );
     }
 }

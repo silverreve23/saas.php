@@ -11,8 +11,22 @@ use Classes\Program\Interfaces\ProgramConfig;
 # Class config for nginx sub app
 #------------------------------------------------------------------------------
 class ProgramConfigNginxServer implements ProgramConfig {
-    public $siteAvaliadlePath = '/etc/nginx/sites-available/';
-    public $siteEnabledlePath = '/etc/nginx/sites-enable/';
+    public $siteAvailablePath = '/etc/nginx/sites-available/';
+    public $siteEnabledPath = '/etc/nginx/sites-enabled/';
+    private $configData = null;
+    #--------------------------------------------------------------------------
+    # @method __construct
+    # @access public
+    # @params object
+    # @return void
+    # Metod constructor for program nginx sub app
+    # Method given site app nginx user data
+    #--------------------------------------------------------------------------
+    public function __construct(Object $data){
+        $this->configData = $data;
+        $this->siteAvailablePath .= $this->configData->name;
+        $this->siteEnabledPath .= $this->configData->name;
+    }
     #--------------------------------------------------------------------------
     # @method getConfig
     # @access public

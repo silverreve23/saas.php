@@ -19,6 +19,9 @@ class ProgramCommandNginxReload implements ProgramCommand {
     # Metod return reload nginx command
     #--------------------------------------------------------------------------
     public function getCommand(){
-        return 'sudo service nginx reload';
+        return '
+            sudo service nginx stop;
+            sudo service nginx start;
+        ';
     }
 }

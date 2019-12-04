@@ -11,6 +11,9 @@ use Classes\Program\Interfaces\ProgramConfig;
 # Class config of remove db mysql for sub app
 #------------------------------------------------------------------------------
 class ProgramConfigRemoveDBMysqlServer implements ProgramConfig {
+    public function __construct(Object $data){
+        $this->configData = $data;
+    }
     #--------------------------------------------------------------------------
     # @method getConfig
     # @access public
