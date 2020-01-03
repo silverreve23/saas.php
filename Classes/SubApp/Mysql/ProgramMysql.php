@@ -5,11 +5,10 @@ namespace Classes\SubApp\Mysql;
 use Classes\Program\Program;
 use Classes\Program\Interfaces\ProgramCommand;
 use Classes\SubApp\Interfaces\ProgramSubApp;
-use Classes\SubApp\Mysql\ProgramCommandMysqlCheck;
-use Classes\SubApp\Mysql\ProgramCommandMysqlReload;
 use Classes\SubApp\Mysql\ProgramConfigCreateDBMysqlServer;
 use Classes\SubApp\Mysql\ProgramConfigRemoveDBMysqlServer;
 use Classes\SubApp\Mysql\ProgramConfiguratorMysqlServer;
+use Classes\SubApp\Mysql\ProgramCommandMysqlFactory;
 
 #------------------------------------------------------------------------------
 # @class ProgramMysql
@@ -18,9 +17,7 @@ use Classes\SubApp\Mysql\ProgramConfiguratorMysqlServer;
 # Class hundle mysql configuration for sub app
 #------------------------------------------------------------------------------
 class ProgramMysql extends Program implements ProgramSubApp {
-    public function __construct(Object $data){
-        $this->configData = $data;
-    }
+    private const MYSQL_CHECK_COMMAND = self::CHECK_COMMAND_PROGRAM;
     #--------------------------------------------------------------------------
     # @method createConfig
     # @access public
@@ -32,7 +29,7 @@ class ProgramMysql extends Program implements ProgramSubApp {
         $this->checkMysql();
         return $this->setConfig(
             $this->getMysqlConfigurator(
-                $configType = 'create'
+                $configType = self::CREATE_CONFIG_TYPE
             )
         );
     }
@@ -44,9 +41,9 @@ class ProgramMysql extends Program implements ProgramSubApp {
     # Metod remove config for mysql sub app
     #--------------------------------------------------------------------------
     public function flushConfig(){
-        return $this->getMysqlConfigurator(
-            $configType = 'remove'
-        )->flushConfig();
+        return $this
+            ->getMysqlConfigurator(self::REMOVE_CONFIG_TYPE)
+            ->flushConfig();
     }
     #--------------------------------------------------------------------------
     # @method checkMysql
@@ -57,7 +54,7 @@ class ProgramMysql extends Program implements ProgramSubApp {
     #--------------------------------------------------------------------------
     private function checkMysql(){
         return $this->runProgramCommand(
-            new ProgramCommandMysqlCheck
+            $this->getCommand(self::MYSQL_CHECK_COMMAND)
         );
     }
     #--------------------------------------------------------------------------
@@ -67,14 +64,33 @@ class ProgramMysql extends Program implements ProgramSubApp {
     # @return Object
     # Metod return mysql configurator Object
     #--------------------------------------------------------------------------
-    private function getMysqlConfigurator($configType = 'create'){
-        $configClass = ($configType == 'create')
-            ? ProgramConfigCreateDBMysqlServer::class
-            : ProgramConfigRemoveDBMysqlServer::class;
+    private function getMysqlConfigurator($configType = self::CREATE_CONFIG_TYPE){
         return new ProgramConfiguratorMysqlServer(
-            new $configClass(
-                $this->configData
-            )
+            $this->getConfig($configType == self::CREATE_CONFIG_TYPE)
         );
+    }
+    #--------------------------------------------------------------------------
+    # @method getCommand
+    # @access private
+    # @params string
+    # @return Object
+    # Metod return mysql command
+    #--------------------------------------------------------------------------
+    private function getCommand($commandName = self::MYSQL_CHECK_COMMAND){
+        $commandFactory = new ProgramCommandMysqlFactory;
+        return $commandFactory->getCommand(self::MYSQL_CHECK_COMMAND);
+    }
+    #--------------------------------------------------------------------------
+    # @method getConfig
+    # @access private
+    # @params string
+    # @return Object
+    # Metod return mysql config
+    #--------------------------------------------------------------------------
+    private function getConfig($configType = self::CREATE_CONFIG_TYPE){
+        $configClass = ($configType == self::CREATE_CONFIG_TYPE)
+            ? new ProgramConfigCreateDBMysqlServer($this->configData)
+            : new ProgramConfigRemoveDBMysqlServer($this->configData);
+        return $configClass;
     }
 }

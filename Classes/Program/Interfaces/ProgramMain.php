@@ -26,4 +26,12 @@ interface ProgramMain {
     # Method run command program
     #--------------------------------------------------------------------------
     public function runCommand(ProgramCommand $program);
+    #--------------------------------------------------------------------------
+    # @method getCommand
+    # @access public
+    # @params void
+    # @return ProgramCommand
+    # Method return ProgramCommand command
+    #--------------------------------------------------------------------------
+    public function getCommand(): ProgramCommand;
 }

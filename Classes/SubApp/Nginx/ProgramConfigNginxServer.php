@@ -37,8 +37,8 @@ class ProgramConfigNginxServer implements ProgramConfig {
     public function getConfig(){
         return "
             server {
-                listen localhost:8090;
-                listen localhost:8090 ssl;
+                listen 192.168.0.200:80{$this->configData->id};
+                #listen 192.168.0.200:8094 ssl;
 
                 ssl_certificate /etc/ssl/certs/nginx-self.crt;
                 ssl_certificate_key /etc/ssl/private/nginx-self.key;
@@ -47,7 +47,7 @@ class ProgramConfigNginxServer implements ProgramConfig {
 
                 index index.php index.html index.htm;
 
-                server_name _;
+                server_name 192.168.0.200;
 
                 location / {
                     try_files \$uri \$uri/ /index.php?\$query_string;

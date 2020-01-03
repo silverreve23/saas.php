@@ -7,16 +7,20 @@ use Classes\SubApp\Nginx\ProgramNginx;
 use Classes\SubApp\Mysql\ProgramMysql;
 
 $subAppPrograms = array();
+$data = (object) array(
+    'id' => 80,
+    'name' => 'test'
+);
 
-$data = (object) array('name' => 'saas_test');
-
-// array_push($subAppPrograms, new ProgramNginx($data));
-array_push($subAppPrograms, new ProgramMysql($data));
 try{
+    array_push($subAppPrograms, new ProgramNginx($data));
+    array_push($subAppPrograms, new ProgramMysql($data));
     foreach($subAppPrograms as $program){
-        echo $program->createConfig();
-        echo $program->flushConfig();
+        $program->createConfig();
+        // $program->flushConfig();
     }
+    echo "Created http://192.168.0.200:80{$data->id}\n";
 }catch(Exception $e){
+    dd($e);
     echo $e->getMessage();
 }

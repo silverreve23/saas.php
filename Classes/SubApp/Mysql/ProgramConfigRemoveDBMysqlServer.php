@@ -23,8 +23,8 @@ class ProgramConfigRemoveDBMysqlServer implements ProgramConfig {
     #--------------------------------------------------------------------------
     public function getConfig(){
         return "
-            DROP DATABASE SAAS_DB_TEST;
-            DROP USER 'saas_user_test'@'localhost';
+            DROP DATABASE saas_db_{$this->configData->name};
+            DROP USER 'saas_user_{$this->configData->name}'@'localhost';
             FLUSH PRIVILEGES;
         ";
     }

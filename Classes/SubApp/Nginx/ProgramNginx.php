@@ -5,10 +5,9 @@ namespace Classes\SubApp\Nginx;
 use Classes\Program\Program;
 use Classes\Program\Interfaces\ProgramCommand;
 use Classes\SubApp\Interfaces\ProgramSubApp;
-use Classes\SubApp\Nginx\ProgramCommandNginxCheck;
-use Classes\SubApp\Nginx\ProgramCommandNginxReload;
 use Classes\SubApp\Nginx\ProgramConfigNginxServer;
 use Classes\SubApp\Nginx\ProgramConfiguratorNginxServer;
+use Classes\SubApp\Nginx\ProgramCommandNginxFactory;
 
 #------------------------------------------------------------------------------
 # @class ProgramNginx
@@ -17,9 +16,8 @@ use Classes\SubApp\Nginx\ProgramConfiguratorNginxServer;
 # Class hundle nginx configuration for sub app
 #------------------------------------------------------------------------------
 class ProgramNginx extends Program implements ProgramSubApp {
-    public function __construct(Object $data){
-        $this->configData = $data;
-    }
+    private const NGINX_CHECK_COMMAND = self::CHECK_COMMAND_PROGRAM;
+    private const NGINX_RELOAD_COMMAND = self::CHECK_RELOAD_PROGRAM;
     #--------------------------------------------------------------------------
     # @method createConfig
     # @access public
@@ -54,7 +52,7 @@ class ProgramNginx extends Program implements ProgramSubApp {
     #--------------------------------------------------------------------------
     private function reloadNginx(){
         return $this->runProgramCommand(
-            new ProgramCommandNginxReload
+            $this->getCommand(self::NGINX_RELOAD_COMMAND)
         );
     }
     #--------------------------------------------------------------------------
@@ -66,7 +64,7 @@ class ProgramNginx extends Program implements ProgramSubApp {
     #--------------------------------------------------------------------------
     private function checkNginx(){
         return $this->runProgramCommand(
-            new ProgramCommandNginxCheck
+            $this->getCommand(self::NGINX_CHECK_COMMAND)
         );
     }
     #--------------------------------------------------------------------------
@@ -82,5 +80,16 @@ class ProgramNginx extends Program implements ProgramSubApp {
                 $this->configData
             )
         );
+    }
+    #--------------------------------------------------------------------------
+    # @method getCommand
+    # @access private
+    # @params string
+    # @return Object
+    # Metod return nginx command
+    #--------------------------------------------------------------------------
+    private function getCommand($commandName = self::NGINX_CHECK_COMMAND){
+        $commandFactory = new ProgramCommandNginxFactory;
+        return $commandFactory->getCommand(self::NGINX_CHECK_COMMAND);
     }
 }

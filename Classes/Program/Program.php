@@ -16,6 +16,14 @@ use Exception;
 #------------------------------------------------------------------------------
 class Program implements ProgramMain {
     protected const STATUS_ERROR = -1;
+    protected const REMOVE_CONFIG_TYPE = 'remove';
+    protected const CREATE_CONFIG_TYPE = 'create';
+    protected const CHECK_COMMAND_PROGRAM = 'check';
+    protected const RELOAD_COMMAND_PROGRAM = 'reload';
+    public function __construct(Object $data){
+        $this->configData = $data;
+        $this->commandNginxReload = new ProgramCommandNginxReload;
+    }
     #--------------------------------------------------------------------------
     # @method ProgramNginx
     # @access public

@@ -22,11 +22,10 @@ class ProgramConfigCreateDBMysqlServer implements ProgramConfig {
     # Method get mysql config program
     #--------------------------------------------------------------------------
     public function getConfig(){
-        $databaseName = $this->configData->name;
         return "
-            CREATE DATABASE $databaseName;
-            CREATE USER 'saas_user_test'@'localhost' IDENTIFIED BY 'password';
-            GRANT ALL PRIVILEGES ON SAAS_DB_TEST.* TO 'saas_user_test'@'localhost';
+            CREATE DATABASE saas_db_{$this->configData->name};
+            CREATE USER 'saas_user_{$this->configData->name}'@'localhost' IDENTIFIED BY 'password';
+            GRANT ALL PRIVILEGES ON saas_db_{$this->configData->name}.* TO 'saas_user_{$this->configData->name}'@'localhost';
             FLUSH PRIVILEGES;
         ";
     }
